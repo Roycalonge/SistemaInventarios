@@ -4,113 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Inventarios</title>
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-    h1 {
-      text-align: center;
-      color: #007bff;
-    }
-    .tabs {
-      display: flex;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .tab-button {
-      padding: 10px 20px;
-      cursor: pointer;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .tab-button:hover {
-      background-color: #0056b3;
-    }
-    .tab-button.active {
-      background-color: #0056b3;
-    }
-    .tab-content {
-      display: none;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #007bff;
-      color: #fff;
-    }
-    tr:hover {
-      background-color: #f1f1f1;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    label {
-      font-weight: bold;
-    }
-    input, button {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    @media (max-width: 768px) {
-      .tabs {
-        flex-direction: column;
-      }
-      .tab-button {
-        width: 100%;
-        margin-bottom: 5px;
-      }
-      .container {
-        padding: 10px;
-      }
-    }
-  </style>
 </head>
 <body>
   <div class="container">
@@ -125,39 +20,19 @@
     </div>
     <div id="categorias" class="tab-content active">
       <h2><i class="fas fa-list"></i> Categorías</h2>
-      <p>Contenido de Categorías.</p>
+      <div id="categorias-content"></div>
     </div>
     <div id="inventario-productos" class="tab-content">
       <h2><i class="fas fa-box"></i> Inventario Productos Terminados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Producto A</td>
-            <td>10</td>
-            <td>$20.00</td>
-          </tr>
-          <tr>
-            <td>Producto B</td>
-            <td>5</td>
-            <td>$15.00</td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="inventario-productos-content"></div>
     </div>
     <div id="inventario-materia-prima" class="tab-content">
       <h2><i class="fas fa-cubes"></i> Inventario Materia Prima</h2>
-      <p>Contenido de Inventario Materia Prima.</p>
+      <div id="inventario-materia-prima-content"></div>
     </div>
     <div id="movimientos" class="tab-content">
       <h2><i class="fas fa-exchange-alt"></i> Movimientos</h2>
-      <p>Contenido de Movimientos.</p>
+      <div id="movimientos-content"></div>
     </div>
     <div id="configuracion" class="tab-content">
       <h2><i class="fas fa-cog"></i> Configuración</h2>
@@ -181,25 +56,86 @@
   </div>
 
   <script>
-    // JavaScript para manejar las pestañas
     document.addEventListener("DOMContentLoaded", function() {
       const tabButtons = document.querySelectorAll(".tab-button");
       const tabContents = document.querySelectorAll(".tab-content");
 
+      // Función para cargar datos desde un archivo JSON
+      function loadData(tabId, url) {
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            const contentDiv = document.getElementById(`${tabId}-content`);
+            if (tabId === "categorias") {
+              contentDiv.innerHTML = `
+                <ul>
+                  ${data.map(item => `<li>${item.nombre}</li>`).join("")}
+                </ul>
+              `;
+            } else if (tabId === "inventario-productos") {
+              contentDiv.innerHTML = `
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${data.map(item => `
+                      <tr>
+                        <td>${item.nombre}</td>
+                        <td>${item.cantidad}</td>
+                        <td>$${item.precio.toFixed(2)}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              `;
+            } else if (tabId === "inventario-materia-prima") {
+              contentDiv.innerHTML = `
+                <ul>
+                  ${data.map(item => `<li>${item.nombre} - ${item.cantidad} unidades</li>`).join("")}
+                </ul>
+              `;
+            } else if (tabId === "movimientos") {
+              contentDiv.innerHTML = `
+                <ul>
+                  ${data.map(item => `<li>${item.tipo}: ${item.producto} - ${item.cantidad} unidades</li>`).join("")}
+                </ul>
+              `;
+            }
+          });
+      }
+
+      // Manejar pestañas
       tabButtons.forEach(button => {
         button.addEventListener("click", () => {
-          // Remover la clase 'active' de todos los botones y contenidos
           tabButtons.forEach(btn => btn.classList.remove("active"));
           tabContents.forEach(content => content.classList.remove("active"));
-
-          // Agregar la clase 'active' al botón y contenido seleccionado
           button.classList.add("active");
           const tabId = button.getAttribute("data-tab");
+
+          // Cargar datos según la pestaña seleccionada
+          if (tabId === "categorias") {
+            loadData(tabId, "data/categorias.json");
+          } else if (tabId === "inventario-productos") {
+            loadData(tabId, "data/inventario-productos.json");
+          } else if (tabId === "inventario-materia-prima") {
+            loadData(tabId, "data/inventario-materia-prima.json");
+          } else if (tabId === "movimientos") {
+            loadData(tabId, "data/movimientos.json");
+          }
+
           document.getElementById(tabId).classList.add("active");
         });
       });
 
-      // Manejar el envío del formulario
+      // Cargar datos iniciales (primera pestaña)
+      loadData("categorias", "data/categorias.json");
+
+      // Manejar el formulario
       document.getElementById("config-form").addEventListener("submit", function(event) {
         event.preventDefault();
         alert("Configuración guardada correctamente.");
