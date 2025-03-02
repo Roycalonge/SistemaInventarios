@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Inventarios</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-boxes"></i> Sistema de Inventarios</h1>
+    <div class="tabs">
+      <button class="tab-button active" data-tab="categorias">Categorías</button>
+      <button class="tab-button" data-tab="inventario-productos">Inventario Productos Terminados</button>
+      <button class="tab-button" data-tab="inventario-materia-prima">Inventario Materia Prima</button>
+      <button class="tab-button" data-tab="movimientos">Movimientos</button>
+      <button class="tab-button" data-tab="configuracion">Configuración</button>
+      <button class="tab-button" data-tab="ayuda">Ayuda</button>
+    </div>
+    <div id="categorias" class="tab-content active">
+      <h2><i class="fas fa-list"></i> Categorías</h2>
+      <div id="categorias-content"></div>
+    </div>
+    <div id="inventario-productos" class="tab-content">
+      <h2><i class="fas fa-box"></i> Inventario Productos Terminados</h2>
+      <div id="inventario-productos-content"></div>
+    </div>
+    <div id="inventario-materia-prima" class="tab-content">
+      <h2><i class="fas fa-cubes"></i> Inventario Materia Prima</h2>
+      <div id="inventario-materia-prima-content"></div>
+    </div>
+    <div id="movimientos" class="tab-content">
+      <h2><i class="fas fa-exchange-alt"></i> Movimientos</h2>
+      <div id="movimientos-content"></div>
+    </div>
+    <div id="configuracion" class="tab-content">
+      <h2><i class="fas fa-cog"></i> Configuración</h2>
+      <form id="config-form">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="notificaciones">Recibir notificaciones:</label>
+        <input type="checkbox" id="notificaciones" name="notificaciones">
+
+        <button type="submit">Guardar</button>
+      </form>
+    </div>
+    <div id="ayuda" class="tab-content">
+      <h2><i class="fas fa-question-circle"></i> Ayuda</h2>
+      <p>Información de Ayuda.</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabContents = document.querySelectorAll(".tab-content");
+
+      // Función para cargar datos desde un archivo JSON
+      function loadData(tabId, url) {
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            const contentDiv = document.getElementById(`${tabId}-content`);
+            if (tabId === "categorias") {
+              contentDiv.innerHTML = `
+                <ul>
+                  ${data.map(item => `<li>${item.nombre}</li>`).join("")}
+                </ul>
+              `;
+            } else if (tabId === "inventario-productos") {
+              contentDiv.innerHTML = `
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${data.map(item => `
+                      <tr>
+                        <td>${item.nombre}</td>
+                        <td>${item.cantidad}</td>
+                        <td>$${item.precio.toFixed(2)}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              `;
+            } else if (tabId === "inventario-materia-prima") {
+              contentDiv.innerHTML = `
+                <ul>
+                  ${data.map(item => `<li>${item.nombre} - ${item.cantidad} unidades</li>`).join("")}
+                </ul>
+              `;
+            } else if (tabId === "movimientos") {
+              contentDiv.innerHTML = `
+                <ul>
+                  ${data.map(item => `<li>${item.tipo}: ${item.producto} - ${item.cantidad} unidades</li>`).join("")}
+                </ul>
+              `;
+            }
+          });
+      }
+
+      // Manejar pestañas
+      tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          tabButtons.forEach(btn => btn.classList.remove("active"));
+          tabContents.forEach(content => content.classList.remove("active"));
+          button.classList.add("active");
+          const tabId = button.getAttribute("data-tab");
+
+          // Cargar datos según la pestaña seleccionada
+          if (tabId === "categorias") {
+            loadData(tabId, "data/categorias.json");
+          } else if (tabId === "inventario-productos") {
+            loadData(tabId, "data/inventario-productos.json");
+          } else if (tabId === "inventario-materia-prima") {
+            loadData(tabId, "data/inventario-materia-prima.json");
+          } else if (tabId === "movimientos") {
+            loadData(tabId, "data/movimientos.json");
+          }
+
+          document.getElementById(tabId).classList.add("active");
+        });
+      });
+
+      // Cargar datos iniciales (primera pestaña)
+      loadData("categorias", "data/categorias.json");
+
+      // Manejar el formulario
+      document.getElementById("config-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        alert("Configuración guardada correctamente.");
+      });
+    });
+  </script>
+</body>
+</html>
