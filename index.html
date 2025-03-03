@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Perfumes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="text-center">Inventario de Perfumes</h2>
+        <ul class="nav nav-tabs" id="pestañas"></ul>
+        <div class="tab-content mt-3" id="contenido-pestañas"></div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let pestañasLista = ["Movimientos", "Inventario Productos Terminados", "Inventario Materia Prima", "Categorías", "Configuración", "Ayuda"];
+            let pestañas = document.getElementById("pestañas");
+            let contenido = document.getElementById("contenido-pestañas");
+            let primera = true;
+            
+            pestañasLista.forEach(sheetName => {
+                let idTab = sheetName.replace(/\s+/g, '');
+                let tab = document.createElement("li");
+                tab.className = "nav-item";
+                tab.innerHTML = `<a class="nav-link ${primera ? 'active' : ''}" data-bs-toggle="tab" href="#${idTab}">${sheetName}</a>`;
+                pestañas.appendChild(tab);
+                
+                let tabContent = document.createElement("div");
+                tabContent.id = idTab;
+                tabContent.className = `tab-pane fade ${primera ? 'show active' : ''}`;
+                tabContent.innerHTML = `
+                    <h4>${sheetName}</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr id="head-${idTab}"></tr>
+                            </thead>
+                        </table>
+                    </div>
+                `;
+                contenido.appendChild(tabContent);
+                primera = false;
+            });
+
+            fetch("encabezados.json")
+                .then(response => response.json())
+                .then(data => {
+                    Object.keys(data).forEach(sheet => {
+                        let id = sheet.replace(/\s+/g, '');
+                        let headRow = document.getElementById("head-" + id);
+                        if (headRow) {
+                            data[sheet].forEach(header => {
+                                let th = document.createElement("th");
+                                th.textContent = header;
+                                headRow.appendChild(th);
+                            });
+                        }
+                    });
+                })
+                .catch(error => console.error("Error al cargar los datos:", error));
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
