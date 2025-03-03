@@ -1,8 +1,13 @@
 SistemaInventarios/
-├── data/
-│   ├── categorias.json
-│   ├── inventario-productos.json
-│   ├── inventario-materia-prima.json
-│   └── movimientos.json
-├── index.html
-└── styles.css
+├── app/
+│   ├── data/
+│   │   ├── categorias.json
+│   │   ├── inventario-productos.json
+│   │   ├── inventario-materia-prima.json
+│   │   └── movimientos.json
+│   ├── js/
+│   │   └── script.js
+│   ├── css/
+│   │   └── styles.css
+│   └── index.html
+└── README.md
