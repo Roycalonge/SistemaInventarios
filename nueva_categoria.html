@@ -1,0 +1,53 @@
+// script.js actualizado para recibir la nueva categoría desde el popup
+
+document.addEventListener("DOMContentLoaded", function() {
+    const categorias = [];
+    fetch("data/categorias_limpio.json")
+        .then(response => response.json())
+        .then(data => {
+            categorias.push(...data);
+        })
+        .catch(error => console.error("Error cargando categorías:", error));
+
+    document.getElementById("codigo").addEventListener("keydown", function(event) {
+        if (event.key === "Tab") {
+            event.preventDefault();
+            autocompletarFormulario();
+        }
+    });
+
+    function autocompletarFormulario() {
+        const codigoIngresado = document.getElementById("codigo").value.trim();
+        const categoriaEncontrada = categorias.find(cat => cat["CÓDIGO"].toString() === codigoIngresado);
+
+        if (categoriaEncontrada) {
+            document.getElementById("referencia_interna").value = categoriaEncontrada["REFERENCIA INTERNA"] || "";
+            document.getElementById("categoria").value = categoriaEncontrada["CATEGORÍA"] || "";
+            document.getElementById("genero").value = categoriaEncontrada["GÉNERO"] || "";
+            document.getElementById("unidad_medida").value = categoriaEncontrada["UNIDAD DE MEDIDA"] || "";
+        } else {
+            if (confirm("⚠️ Código no encontrado. ¿Deseas agregar una nueva categoría?")) {
+                abrirPopupNuevaCategoria(codigoIngresado);
+            }
+        }
+    }
+
+    function abrirPopupNuevaCategoria(codigo) {
+        const url = `nueva_categoria.html?codigo=${codigo}`;
+        const nuevaVentana = window.open(url, "Nueva Categoría", "width=400,height=500");
+        nuevaVentana.onunload = function() {
+            recibirNuevaCategoria();
+        };
+    }
+
+    function recibirNuevaCategoria() {
+        const nuevaCategoria = JSON.parse(localStorage.getItem("nuevaCategoria"));
+        if (nuevaCategoria) {
+            categorias.push(nuevaCategoria);
+            localStorage.removeItem("nuevaCategoria");
+            alert("Nueva categoría agregada correctamente.");
+        }
+    }
+
+    recibirNuevaCategoria();
+});

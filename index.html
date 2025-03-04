@@ -1,140 +1,75 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Sistema de Inventario</h1>
+    </header>
+    
+    <main>
+        <section id="formulario">
+            <h2>Registrar Movimiento</h2>
+            <form id="movimientoForm">
+                <label>Código: <input type="text" id="codigo" required></label>
+                <label>Referencia: <input type="text" id="referencia_interna"></label>
+                <label>Nombre Producto: <input type="text" id="nombre_producto"></label>
+                <label>Categoría: <input type="text" id="categoria"></label>
+                <label>Género: <input type="text" id="genero"></label>
+                <label>Fabricante: <input type="text" id="fabricante"></label>
+                <label>Unidad de Medida: <input type="text" id="unidad_medida"></label>
+                <label>Tipo de Movimiento: <input type="text" id="tipo_movimiento"></label>
+                <label>Fecha: <input type="date" id="fecha"></label>
+                <label>Cantidad: <input type="number" id="cantidad"></label>
+                <label>Precio: <input type="number" id="precio"></label>
+                <button type="submit">Registrar</button>
+                <button type="button" id="limpiarFormulario">Limpiar</button>
+            </form>
+        </section>
 
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-}
+        <section id="tabla">
+            <h2>Movimientos Registrados</h2>
+            <table id="tablaMovimientos">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Referencia</th>
+                        <th>Nombre Producto</th>
+                        <th>Categoría</th>
+                        <th>Género</th>
+                        <th>Fabricante</th>
+                        <th>Unidad Medida</th>
+                        <th>Tipo Movimiento</th>
+                        <th>Fecha</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button id="guardarDatos" style="display: none;">Guardar Datos</button>
+        </section>
 
-h1 {
-    text-align: center;
-    color: #333;
-}
+        <!-- Formulario para agregar nueva categoría -->
+        <section id="formNuevaCategoria" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
+            <h2>Agregar Nueva Categoría</h2>
+            <form id="formNuevaCategoriaForm">
+                <label>Código: <input type="text" id="nuevoCodigo" readonly></label>
+                <label>Referencia: <input type="text" id="nuevaReferencia"></label>
+                <label>Categoría: <input type="text" id="nuevaCategoria"></label>
+                <label>Género: <input type="text" id="nuevoGenero"></label>
+                <label>Unidad de Medida: <input type="text" id="nuevaUnidad"></label>
+                <label>Descripción: <input type="text" id="nuevaDescripcion"></label>
+                <button type="submit">Guardar Categoría</button>
+            </form>
+        </section>
+    </main>
 
-.tabs {
-    display: flex;
-    justify-content: space-around;
-    background: #333;
-    padding: 10px 0;
-    border-radius: 5px 5px 0 0;
-}
-
-.tab-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 10px 20px;
-}
-
-.tab-button:hover, .tab-button.active {
-    background: #555;
-    border-radius: 5px;
-}
-
-.tab-content {
-    display: none;
-    padding: 20px;
-    background: white;
-}
-
-.active-content {
-    display: block;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-table, th, td {
-    border: 1px solid #ccc;
-    text-align: left;
-}
-
-th, td {
-    padding: 10px;
-}
-
-th {
-    background: #f8f8f8;
-}
-
-.button {
-    background: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-    display: inline-block;
-}
-
-.button:hover {
-    background: #218838;
-}
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    fetch("https://raw.githubusercontent.com/Roycalonge/SistemaInventarios/main/encabezados.json")
-        .then(response => response.json())
-        .then(data => {
-            const tabsContainer = document.querySelector(".tabs");
-            const contentContainer = document.querySelector(".container");
-            
-            Object.keys(data).forEach((category, index) => {
-                // Crear botón de pestaña
-                const button = document.createElement("button");
-                button.className = "tab-button";
-                button.innerText = category;
-                button.dataset.tab = category;
-                if (index === 0) button.classList.add("active");
-                tabsContainer.appendChild(button);
-                
-                // Crear contenido de pestaña
-                const tabContent = document.createElement("div");
-                tabContent.className = "tab-content";
-                if (index === 0) tabContent.classList.add("active-content");
-                
-                const table = document.createElement("table");
-                const thead = document.createElement("thead");
-                const tbody = document.createElement("tbody");
-                
-                // Agregar encabezados
-                const headerRow = document.createElement("tr");
-                data[category].forEach(header => {
-                    const th = document.createElement("th");
-                    th.innerText = header;
-                    headerRow.appendChild(th);
-                });
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
-                table.appendChild(tbody);
-                tabContent.appendChild(table);
-                contentContainer.appendChild(tabContent);
-            });
-            
-            // Agregar funcionalidad de pestañas
-            document.querySelectorAll(".tab-button").forEach(button => {
-                button.addEventListener("click", function() {
-                    document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active"));
-                    document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active-content"));
-                    
-                    this.classList.add("active");
-                    document.querySelectorAll(".tab-content")[Array.from(tabsContainer.children).indexOf(this)].classList.add("active-content");
-                });
-            });
-        });
-});
-</script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+    "Categorías": [
+        "CÓDIGO",
+        "REFERENCIA INTERNA",
+        "CATEGORÍA",
+        "TIPO DE PRODUCTO",
+        "GÉNERO",
+        "DESCRIPCIÓN",
+        "UNIDAD DE MEDIDA"
+    ],
+    "Inventario Productos Terminados": [
+        "CODIGO",
+        "REFERENCIA INTERNA",
+        "NOMBRE DEL PRODUCTO",
+        "CATEGORIA",
+        "GENERO",
+        "FABRICANTE",
+        "UNIDAD DE MEDIDA",
+        "PRECIO UNIT",
+        "STOCK INICIAL",
+        "FECHA MOVIMIENTO",
+        "ENTRADAS",
+        "SALIDAS",
+        "STOCK FINAL"
+    ],
+    "Inventario Materia Prima": [
+        "CÓDIGO",
+        "REFERNCIA INTERNA",
+        "NOMBRE DEL INSUMO",
+        "CATEGORÍA",
+        "DESCRIPCION",
+        "UNIDAD DE MEDIDA",
+        "CANTIDAD",
+        "STOCK INICIAL",
+        "ENTRADAS",
+        "SALIDAS",
+        "STOCK FINAL"
+    ],
+    "Movimientos": [
+         "CODIGO",
+        "REFERENCIA INTERNA",
+        "NOMBRE DEL PRODUCTO",
+        "CATEGORIA",
+        "GENERO",
+        "FABRICANTE",
+        "UNIDAD DE MEDIDA",
+        "TIPO MOVIMIENTO",
+        "FECHA",
+        "CANTIDAD",
+        "PRECIO"
+    ]
+}
